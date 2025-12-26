@@ -139,8 +139,6 @@ vibe-writing/
 │       ├── output-card.md
 │       ├── checkpoint.md
 │       └── example-project.md
-├── 项目/                      # 示例项目（不在插件中）
-│   └── Claude和GPT的区别/
 ├── CLAUDE.md                  # 系统入口文档
 └── README.md                  # 本文档
 ```
