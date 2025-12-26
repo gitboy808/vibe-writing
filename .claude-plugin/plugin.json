@@ -3,8 +3,8 @@
   "version": "0.6.1",
   "description": "Vibe Writing System - 以人为主体的思维协同写作系统，通过对话激发、结构规划、迭代优化、最终成稿四阶段工作流实现高质量内容创作",
   "author": {
-    "name": "Vibe Writing"
+    "name": "gitboy808"
   },
   "keywords": ["writing", "workflow", "collaboration", "content-creation", "knowledge-management"],
-  "homepage": "https://github.com/vibe-writing/vibe-writing-plugin"
+  "homepage": "https://github.com/gitboy808/vibe-writing"
 }

@@ -46,7 +46,7 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/YOUR_USERNAME/vibe-writing.git
+git clone https://github.com/gitboy808/vibe-writing.git
 cd vibe-writing
 
 # 复制到你的 Obsidian vault 或工作目录
