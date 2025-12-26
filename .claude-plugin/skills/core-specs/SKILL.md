@@ -142,8 +142,8 @@ Each field is maintained by only one agent. No conflicts, no overlap.
 ## Additional Resources
 
 For detailed field structures and examples, consult:
-- **`references/project-info-fields.md`** - Complete field definitions with examples
-- **`examples/project-info-example.md`** - Real project info file
+- **`references/checkpoint.md`** - Complete field definitions with examples (断点续传机制)
+- **`references/example-project.md`** - Real project info file example
 
 ## Quick Reference
 

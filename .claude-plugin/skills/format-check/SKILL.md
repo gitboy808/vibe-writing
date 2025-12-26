@@ -191,8 +191,8 @@ Output cards specifically do NOT need ending `> [[知识卡片]]` because:
 ## Additional Resources
 
 For detailed format specifications:
-- **`references/knowledge-card-format.md`** - Complete knowledge card format rules
-- **`references/output-card-format.md`** - Complete output card format rules
+- **`references/knowledge-card.md`** - Complete knowledge card format rules
+- **`references/output-card.md`** - Complete output card format rules
 
 ## Quick Reference
 

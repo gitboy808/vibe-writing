@@ -194,8 +194,8 @@ python -m json.tool "项目/[项目名]/内容白板.canvas" > /dev/null && echo
 ## Additional Resources
 
 For detailed Canvas operations:
-- **`references/canvas-operations.md`** - Complete Canvas workflow guide
-- **`examples/canvas-example.json`** - Working Canvas structure
+- **`references/dual-link.md`** - Complete Canvas workflow and dual-link integration
+- **`references/example-project.md`** - Working Canvas structure example
 
 ## Quick Reference
 
