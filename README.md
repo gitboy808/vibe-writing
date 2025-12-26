@@ -50,7 +50,7 @@ git clone https://github.com/gitboy808/vibe-writing.git
 cd vibe-writing
 
 # 复制到你的 Obsidian vault 或工作目录
-cp -r .claude-plugin agents commands skills references /path/to/your/project/
+cp -r .claude-plugin agents commands skills references /path/to/your/project/.claude/
 ```
 
 ---
@@ -114,28 +114,35 @@ cp -r .claude-plugin agents commands skills references /path/to/your/project/
 
 ```
 vibe-writing/
-├── .claude-plugin/
-│   ├── plugin.json          # Plugin 配置
-│   └── README.md            # Plugin 说明
-├── agents/                  # 4个工作流Agent
-│   ├── learning-agent.md
-│   ├── structure-agent.md
-│   ├── writing-agent.md
-│   └── draft-agent.md
-├── commands/                # 5个快捷命令
-│   ├── structure.md
-│   ├── iterate.md
-│   ├── polish.md
-│   ├── draft.md
-│   └── generate-card.md
-├── skills/                  # 3个核心技能
-│   ├── core-specs/
-│   ├── format-check/
-│   └── canvas-rules/
-└── references/              # 参考文档
-    ├── dual-link.md
-    ├── knowledge-card.md
-    └── output-card.md
+├── .claude-plugin/           # Claude Code Plugin 目录
+│   ├── plugin.json           # Plugin 配置
+│   ├── marketplace.json      # Marketplace 配置
+│   ├── README.md             # Plugin 说明
+│   ├── agents/               # 4个工作流Agent
+│   │   ├── learning-agent.md
+│   │   ├── structure-agent.md
+│   │   ├── writing-agent.md
+│   │   └── draft-agent.md
+│   ├── commands/             # 5个快捷命令
+│   │   ├── structure.md
+│   │   ├── iterate.md
+│   │   ├── polish.md
+│   │   ├── draft.md
+│   │   └── generate-card.md
+│   ├── skills/               # 3个核心技能
+│   │   ├── core-specs/
+│   │   ├── format-check/
+│   │   └── canvas-rules/
+│   └── references/           # 参考文档
+│       ├── dual-link.md
+│       ├── knowledge-card.md
+│       ├── output-card.md
+│       ├── checkpoint.md
+│       └── example-project.md
+├── 项目/                      # 示例项目（不在插件中）
+│   └── Claude和GPT的区别/
+├── CLAUDE.md                  # 系统入口文档
+└── README.md                  # 本文档
 ```
 
 ---
