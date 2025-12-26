@@ -1,46 +1,55 @@
 {
-  "name": "vibe-writing",
-  "description": "以人为主体的思维协同写作系统 - 通过对话激发、结构规划、迭代优化、最终成稿四阶段工作流实现高质量内容创作",
-  "version": "0.6.1",
-  "author": {
-    "name": "Tasihi",
+  "owner": {
+    "username": "gitboy808",
+    "name": "gitboy808",
     "url": "https://github.com/gitboy808"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gitboy808/vibe-writing.git"
-  },
-  "homepage": "https://github.com/gitboy808/vibe-writing",
-  "bugs": {
-    "url": "https://github.com/gitboy808/vibe-writing/issues"
-  },
-  "license": "MIT",
-  "keywords": [
-    "writing",
-    "workflow",
-    "collaboration",
-    "content-creation",
-    "knowledge-management",
-    "chinese",
-    "obsidian"
-  ],
-  "category": "productivity",
-  "manifest": {
-    "agents": 4,
-    "commands": 5,
-    "skills": 3
-  },
-  "capabilities": [
-    "对话引导学习",
-    "知识卡片生成",
-    "结构化输出",
-    "迭代优化润色",
-    "Canvas白板组织",
-    "最终成稿串联"
-  ],
-  "requires": {
-    "claude-code": ">=1.0.0"
-  },
-  "screenshots": [],
-  "icon": ""
+  "plugins": [
+    {
+      "name": "vibe-writing",
+      "description": "以人为主体的思维协同写作系统 - 通过对话激发、结构规划、迭代优化、最终成稿四阶段工作流实现高质量内容创作",
+      "version": "0.6.1",
+      "author": {
+        "name": "gitboy808",
+        "url": "https://github.com/gitboy808"
+      },
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/gitboy808/vibe-writing.git"
+      },
+      "homepage": "https://github.com/gitboy808/vibe-writing",
+      "bugs": {
+        "url": "https://github.com/gitboy808/vibe-writing/issues"
+      },
+      "license": "MIT",
+      "keywords": [
+        "writing",
+        "workflow",
+        "collaboration",
+        "content-creation",
+        "knowledge-management",
+        "chinese",
+        "obsidian"
+      ],
+      "category": "productivity",
+      "manifest": {
+        "agents": 4,
+        "commands": 5,
+        "skills": 3
+      },
+      "capabilities": [
+        "对话引导学习",
+        "知识卡片生成",
+        "结构化输出",
+        "迭代优化润色",
+        "Canvas白板组织",
+        "最终成稿串联"
+      ],
+      "requires": {
+        "claude-code": ">=1.0.0"
+      },
+      "screenshots": [],
+      "icon": ""
+    }
+  ]
 }

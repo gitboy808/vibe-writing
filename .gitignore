@@ -48,3 +48,7 @@ desktop.ini               # Windows 桌面配置
 # CLAUDE.md                # 项目说明
 # README.md                # 说明文档
 # ============================================
+
+.claude/
+.obsidian/
+项目/
