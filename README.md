@@ -1,6 +1,6 @@
 # Vibe Writing System
 
-**版本**: v0.6.1 | **Claude Code Plugin**
+**版本**: v0.7.0 | **Claude Code Plugin**
 
 以人为主体的思维协同写作系统 - 让你掌握知识、掌握结构、掌握内容，最终文章是"你的"，不是AI代写的。
 
