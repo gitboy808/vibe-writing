@@ -52,3 +52,4 @@ desktop.ini               # Windows 桌面配置
 .claude/
 .obsidian/
 项目/
+*.back
