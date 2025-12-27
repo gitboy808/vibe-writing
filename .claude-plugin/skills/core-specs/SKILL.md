@@ -42,7 +42,7 @@ Always execute `pwd` at the start of any agent session to extract the working di
 
 ## Project Information Structure
 
-The `项目信息.md` file contains 7 major fields. Each field is maintained by specific agents following strict responsibility separation.
+The `项目信息.md` file contains 9 major fields. Each field is maintained by specific agents following strict responsibility separation.
 
 ### Field Overview
 
@@ -55,6 +55,8 @@ The `项目信息.md` file contains 7 major fields. Each field is maintained by 
 | Output Card List | structure-agent (add), writing-agent (update iterations) | After generation/optimization |
 | Pending Conversion List | structure-agent | After conversion |
 | Structure Analysis | structure-agent | After "analyze next" |
+| Canvas Organization | writing-agent | After board organization |
+| Final Draft | draft-agent | After draft generation |
 
 ### Core Principle
 
@@ -137,6 +139,31 @@ Each field is maintained by only one agent. No conflicts, no overlap.
 ```markdown
 ## ✨ 输出卡片（优化后）
 1. [[输出卡片/主题/01-节点.md|主题（迭代2次）]] ← [[知识卡片/XX|XX]]
+```
+
+**字段H - 白板组织记录**:
+```markdown
+## 🎨 白板组织记录
+**最近组织**（[日期]）：
+- 已添加连接：[[卡片A|主题A]] → [[卡片B|主题B]]
+- 组织方式：纵向排列 + 逻辑连接
+```
+
+### Draft Agent Maintains
+
+**字段I - 最终成稿**:
+```markdown
+## 📄 最终成稿
+
+### 基本信息
+**文件路径**：`项目/[项目名]/最终成稿-[项目名].md`
+**生成时间**：[YYYY-MM-DD HH:mm]
+**状态**：已完成 / 待润色 / 已完成最终润色
+
+### 包含卡片
+1. [[输出卡片/主题A/01-节点.md|主题A]]
+2. [[输出卡片/主题B/01-节点.md|主题B]]
+...
 ```
 
 ## Additional Resources
