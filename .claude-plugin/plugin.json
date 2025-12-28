@@ -1,10 +1,20 @@
 {
   "name": "vibe-writing",
-  "version": "0.7.0",
-  "description": "Vibe Writing System - 以人为主体的思维协同写作系统，通过对话激发、结构规划、迭代优化、最终成稿四阶段工作流实现高质量内容创作",
+  "version": "0.8.1",
+  "description": "Vibe Writing System - 以人为主体的思维协同写作系统。v0.8.1: 优化技能描述长度，解决字符限制问题",
   "author": {
-    "name": "gitboy808"
+    "name": "gitboy808",
+    "url": "https://github.com/gitboy808"
   },
-  "keywords": ["writing", "workflow", "collaboration", "content-creation", "knowledge-management"],
-  "homepage": "https://github.com/gitboy808/vibe-writing"
+  "keywords": ["writing-system", "knowledge-management", "obsidian", "workflow-automation", "ai-collaboration", "chinese-writing"],
+  "homepage": "https://github.com/gitboy808/vibe-writing",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gitboy808/vibe-writing.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gitboy808/vibe-writing/issues"
+  },
+  "license": "MIT",
+  "categories": ["productivity", "writing", "knowledge-management", "workflow"]
 }

@@ -1,21 +1,21 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "vibe-writing-marketplace",
-  "description": "Vibe Writing System - 以人为主体的思维协同写作系统插件市场",
+  "name": "vibe-writing",
   "owner": {
-    "name": "gitboy808"
+    "name": "gitboy808",
+    "url": "https://github.com/gitboy808"
   },
+  "description": "以人为主体的思维协同写作系统 - 通过对话激发、结构规划、迭代优化、最终成稿四阶段工作流实现高质量内容创作",
+  "version": "0.8.1",
   "plugins": [
     {
       "name": "vibe-writing",
-      "description": "以人为主体的思维协同写作系统 - 通过对话激发、结构规划、迭代优化、最终成稿四阶段工作流实现高质量内容创作",
-      "version": "0.7.0",
-      "author": {
-        "name": "gitboy808"
-      },
-      "source": "./",
-      "category": "productivity",
-      "homepage": "https://github.com/gitboy808/vibe-writing"
+      "source": ".claude-plugin",
+      "description": "通过四阶段工作流实现高质量内容创作",
+      "tags": ["writing", "workflow", "knowledge-management", "ai-collaboration", "chinese-writing"]
     }
-  ]
+  ],
+  "keywords": ["writing", "workflow", "knowledge-management", "ai-collaboration", "chinese-writing"],
+  "license": "MIT",
+  "categories": ["productivity", "writing", "knowledge-management"]
 }
