@@ -1,7 +1,6 @@
 ---
 name: format-check
 description: Validate and correct file formats for knowledge cards and output cards. Ensures compliance with spacing rules, heading rules, and formatting standards.
-version: 0.7.0
 ---
 
 # Format Check - Vibe Writing System

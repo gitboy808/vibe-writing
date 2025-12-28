@@ -1,31 +1,20 @@
 # Vibe Writing Plugin
 
-**版本**：v0.9.1
+**版本**：v1.0.0
 **最后更新**：2025-12-28
 **许可证**：MIT
 
-**v0.9.1 更新**：
-- 完善 agent 权限：所有 agent 支持 WebSearch
-- 添加来源链接标注规范：WebSearch 获取信息后必须标注 `[来源标题](URL)`
-- 来源优先级：官方文档 > 权威技术博客 > 学术论文 > 知名技术网站
+**v1.0.0 重大更新**：
+- **新架构**：Subagent 负责调研和信息整理，主 Agent 负责指令执行和验证
+- **指令格式标准化**：所有 Subagent 必须返回标准指令格式
+- **强制验证机制**：每条指令执行后必须验证，失败时诚实告知
+- **验证机制**：Bash/Write/Edit 执行后强制验证
 
 ---
 
 ## 📦 安装
 
 ### 方式一：通过 GitHub 克隆到插件目录
-
-```bash
-# Windows PowerShell
-# 1. 克隆仓库
-git clone https://github.com/gitboy808/vibe-writing.git
-
-# 2. 复制到 Claude Code 插件目录
-mkdir "$env:APPDATA\Claude\plugins\vibe-writing"
-xcopy vibe-writing\.claude-plugin "$env:APPDATA\Claude\plugins\vibe-writing\.claude-plugin\" /E /I /H /Y
-
-# 3. 重启 Claude Code
-```
 
 ```bash
 # macOS/Linux
@@ -36,23 +25,10 @@ cp -r vibe-writing/.claude-plugin ~/.claude/plugins/vibe-writing/
 
 ### 方式二：本地测试（开发模式）
 
-使用 `--plugin-dir` 标志直接加载插件，无需安装。
-
 ```bash
-# 克隆仓库
 git clone https://github.com/gitboy808/vibe-writing.git
 cd vibe-writing
-
-# 使用插件目录启动 Claude Code
 claude --plugin-dir .
-```
-
-### 方式三：通过 Marketplace 安装
-
-如果你的 Claude Code 版本支持插件市场，直接使用：
-
-```bash
-/plugin install gitboy808/vibe-writing
 ```
 
 ---
@@ -66,20 +42,7 @@ claude --plugin-dir .
 - ✅ 检测工作目录
 - ✅ 识别项目意图
 - ✅ 加载对应的 Agent
-
-### 可选配置
-
-如果需要自定义某些行为，可以创建 `.claude-plugin/vibe-writing.local.md`：
-
-```yaml
----
-# 自定义项目目录名称（默认：项目）
-project_dir: "我的项目"
-
-# 自定义初始文档字数（默认：3000）
-initial_doc_words: 5000
----
-```
+- ✅ 解析并执行 Subagent 返回的指令
 
 ---
 
@@ -89,23 +52,32 @@ initial_doc_words: 5000
 
 **核心理念**：以人为主体性——这是**你的主题**，我是你的协同伙伴。你掌握、你选择、你决定，我激发、总结、建议、润色。
 
-### v0.9.0 架构设计
+### v1.0.0 架构设计
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│              主 Agent (vibe-workflow skill)                  │
-│  职责：极简路由（只读项目状态 → 关键词匹配 → Task调用）      │
-│  只读：项目信息.md的3个字段                                   │
-└───────────────────────────┬─────────────────────────────────┘
-                            │ Task调用（独立上下文）
+┌─────────────────────────────────────────────────────────┐
+│           vibe-workflow (主 Agent)                       │
+│  职责：                                                  │
+│  1. 检测工作目录，提取 {WORK_DIR}                        │
+│  2. 读取项目信息.md                                      │
+│  3. 关键词匹配路由到 Subagent                            │
+│  4. 解析 Subagent 返回的指令                             │
+│  5. 执行指令 + 强制验证                                   │
+└───────────────────────────┬─────────────────────────────┘
+                            │ Task调用
                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Subagent (完全自治)                         │
-│  learning-agent  │ structure-agent │ writing-agent │ draft   │
-│  • 独立上下文    │ • 独立上下文    │ • 独立上下文  │ • 独立   │
-│  • 按需读取文件  │ • 按需读取文件  │ • 按需读取文件│ • 按需   │
-│  • 更新项目信息  │ • 更新项目信息  │ • 更新项目信息│ • 更新   │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│              Subagent (调研+整理模式)                     │
+│  learning-agent  │ structure-agent │ writing-agent │    │
+│  draft-agent                                            │
+│                                                             │
+│  职责：                                                   │
+│  - 调研、信息整理、逻辑分析                               │
+│  - 生成标准指令返回给主 Agent                             │
+│                                                             │
+│  不做：                                                   │
+│  - 直接调用 Bash/Write/Edit 工具                          │
+└─────────────────────────────────────────────────────────┘
                             │
                             ▼
                    ┌─────────────────┐
@@ -114,20 +86,26 @@ initial_doc_words: 5000
                    └─────────────────┘
 ```
 
+### 职责分离
+
+| 组件 | 职责 | 不做 |
+|------|------|------|
+| **主 Agent** | 路由决策 + 工具执行 | 调研、信息整理 |
+| **Subagent** | 调研、信息整理、逻辑分析 | 直接工具调用 |
+| **项目文件** | 持久化存储 | - |
+
 ### 四阶段工作流
 
-1. **学习阶段**（learning-agent）：我和你对话，激发灵感，挖掘你的潜意识，总结成知识卡片
-2. **结构阶段**（structure-agent）：我帮你看到隐藏的价值点，你来决定讲什么、怎么排布
-3. **写作阶段**（writing-agent）：我润色，你把控。我们一起迭代优化
-4. **成稿阶段**（draft-agent）：我串联所有内容，形成完整文章
+1. **学习阶段**（learning-agent）：对话探索，WebSearch 调研，生成知识卡片
+2. **结构阶段**（structure-agent）：分析价值点，生成输出节点
+3. **写作阶段**（writing-agent）：迭代优化，润色内容，组织白板
+4. **成稿阶段**（draft-agent）：串联所有内容，形成完整文章
 
 ---
 
 ## 🚀 使用方式
 
 ### 方式一：自然语言（推荐）
-
-直接用自然语言告诉AI你想做什么：
 
 | 输入 | 触发阶段 |
 |------|----------|
@@ -136,27 +114,15 @@ initial_doc_words: 5000
 | "迭代"、"润色"、"整理" | 写作阶段 |
 | "成稿"、"撰写"、"最终输出" | 成稿阶段 |
 
-**无需任何配置**，AI会自动识别意图并加载对应Agent。
-
 ### 方式二：快捷命令
 
 | 命令 | 说明 |
 |------|------|
-| `/structure` | 深度分析下一步写什么（结构Agent） |
-| `/iterate` | 进入迭代对话模式（写作Agent） |
-| `/polish` | 直接润色当前卡片（写作Agent） |
-| `/draft` | 生成最终成稿（成稿Agent） |
-| `/generate-card` | 提前生成知识卡片（学习Agent） |
-
-### 智能引导
-
-AI 会在合适的时机引导你使用快捷命令：
-
-- **新用户**：展示所有可用命令
-- **学习完成时**：提示 `/structure`
-- **首版生成后**：提示 `/iterate`
-- **迭代完成后**：提示 `/polish`
-- **成稿前**：提示 `/draft`
+| `/structure` | 深度分析下一步写什么 |
+| `/iterate` | 进入迭代对话模式 |
+| `/polish` | 直接润色当前卡片 |
+| `/draft` | 生成最终成稿 |
+| `/generate-card` | 提前生成知识卡片 |
 
 ---
 
@@ -164,157 +130,199 @@ AI 会在合适的时机引导你使用快捷命令：
 
 ```
 .claude-plugin/
-├── plugin.json          # Plugin 配置（含元数据、仓库、许可证）
-├── README.md            # 本文件
-├── agents/              # 4个子Agent
-│   ├── learning-agent.md    # 学习Agent（对话引导）
-│   ├── structure-agent.md   # 结构Agent（价值点分析）
-│   ├── writing-agent.md     # 写作Agent（迭代润色）
-│   └── draft-agent.md       # 成稿Agent（串联成文）
+├── plugin.json          # Plugin 配置
+├── README.md            # 本文件（安装、配置、使用指南）
+├── agents/              # 4个子Agent（v1.0 调研+整理模式）
+│   ├── learning-agent.md
+│   ├── structure-agent.md
+│   ├── writing-agent.md
+│   └── draft-agent.md
 ├── commands/            # 5个快捷命令
-│   ├── structure.md         # 结构分析命令
-│   ├── iterate.md           # 迭代对话命令
-│   ├── polish.md            # 润色命令
-│   ├── draft.md             # 成稿命令
-│   └── generate-card.md     # 卡片生成命令
-├── skills/              # 4个核心技能
-│   ├── vibe-workflow/SKILL.md  # 统筹入口（自然语言触发）
+├── skills/              # 核心技能
+│   ├── vibe-workflow/SKILL.md  # 统筹入口（极简路由规则）
 │   ├── core-specs/SKILL.md     # 核心规范
 │   ├── format-check/SKILL.md   # 格式检查
 │   └── canvas-rules/SKILL.md   # Canvas白板规则
-└── references/          # 共享参考文档
-    ├── README.md              # 参考文档说明
-    └── example-project.md     # 完整示例项目
+└── references/          # 参考文档
+    ├── README.md
+    └── example-project.md
 ```
-
-**组件统计**：
-- 4个 Agents（工作流Agent）
-- 5个 Commands（快捷命令）
-- 4个 Skills（核心技能）
-- 2个 References（共享文档）
 
 ---
 
-## 🎯 使用流程
+## 📋 指令格式标准
 
-### 1. 启动新项目
-
-直接告诉AI你想写什么：
-```
-"我想写关于XX"
-"探索XX"
-"开始一个新项目"
-```
-
-**无需任何配置**，AI会自动创建项目结构、生成初始文档、引导进入对话。
-
-### 2. 学习对话
-
-每4轮对话自动生成一张知识卡片，或随时说"生成卡片"提前生成。
-
-### 3. 结构输出
-
-当知识卡片积累到一定程度，说"输出"或使用 `/structure` 分析下一步写什么。
-
-### 4. 迭代优化
-
-- 说"迭代"、"润色"进入对话迭代模式
-- 或使用 `/iterate`、`/polish`
-
-### 5. 最终成稿
-
-当所有输出卡片完成后，说"成稿"或使用 `/draft` 生成完整文章。
-
----
-
-## 📚 示例项目
-
-查看 `references/example-project.md` 了解完整工作流示例（Claude和GPT的区别）。
-
----
-
-## 🔧 核心原则
-
-1. **主 agent 极简路由**：只做状态检查 + 简单路由，不执行具体任务
-2. **Subagent 完全自治**：每个 subagent 有独立上下文，按需读取
-3. **状态集中存储**：项目信息.md 是唯一真相源
-4. **上下文零污染**：每次 Task 调用后上下文清空
-5. **即装即用**：无需配置 CLAUDE.md，自然语言直接触发
-6. **来源可信优先**：WebSearch/WebFetch 优先从官方文档获取，整理后标注来源链接
-
-### 来源优先级
-
-| 优先级 | 来源类型 | 示例 |
-|--------|---------|------|
-| 1 | 官方文档 | PyTorch、TensorFlow官方文档 |
-| 2 | 权威技术博客 | Google AI Blog、OpenAI Blog、DeepMind |
-| 3 | 学术论文 | arXiv |
-| 4 | 知名技术网站 | Mozilla Developer Network、W3Schools |
-
-### 来源标注格式
-
-WebSearch 获取信息后，必须在相应内容后标注：
+所有 Subagent 必须返回标准指令格式：
 
 ```markdown
-Transformer使用自注意力机制 [...][[Attention Is All You Need](https://arxiv.org/abs/1706.03762)]
+## 【指令】创建项目目录
+
+**命令类型**: bash
+**验证命令**: ls -la "项目/股票投资学习"
+
+```bash
+mkdir -p "项目/股票投资学习/知识卡片"
+```
+
+---
+
+## 【指令】创建项目信息.md
+
+**命令类型**: write
+**文件路径**: 项目/股票投资学习/项目信息.md
+**验证读取**: true
+
+```markdown
+# 项目信息
+...
+```
+```
+
+### 指令类型
+
+| 类型 | 用途 | 主 Agent 响应 |
+|------|------|--------------|
+| bash | 创建目录等 | 执行命令 + 验证结果 |
+| write | 创建文件 | 写入文件 + 读取验证 |
+| edit | 修改文件 | 执行 Edit + 读取验证 |
+| read | 读取文件 | 执行 Read + 返回内容 |
+| ask_user | 询问用户 | 暂停并显示问题 |
+| message | 普通消息 | 直接显示给用户 |
+
+---
+
+## 🎯 核心原则（v1.0）
+
+1. **Subagent 专注调研** - Subagent 负责信息收集、整理、分析，不直接执行工具
+2. **主 Agent 执行指令** - 主 Agent 解析 Subagent 返回的指令，负责实际的工具调用
+3. **强制验证** - 每条指令执行后必须验证，失败时诚实告知
+4. **状态集中存储** - 项目信息.md 是唯一真相源
+5. **上下文零污染** - 每次 Task 调用后上下文清空
+6. **即装即用** - 无需配置 CLAUDE.md，自然语言直接触发
+7. **来源可信优先** - WebSearch 优先从官方文档获取，整理后标注来源链接
+
+---
+
+## 📄 项目信息 Schema
+
+项目根目录 `项目信息.md` 是唯一真相源：
+
+```markdown
+# [项目名]
+
+## 基础信息
+**项目名**: [项目名]
+**创建时间**: [YYYY-MM-DD HH:mm]
+**当前阶段**: 学习/结构/写作/成稿
+**最后更新**: [YYYY-MM-DD HH:mm]
+
+## 学习状态
+**绝对轮次**: [N]
+**相对轮次**: [N]
+**知识卡片数**: [N]
+
+## 输出状态
+**当前正在优化**: [卡片路径] / 无
+**输出卡片迭代次数**: [N]
+
+## 知识卡片列表
+1. [[知识卡片/01. xxx|01. xxx]]
+2. [[知识卡片/02. xxx|02. xxx]]
+
+## 输出卡片列表
+1. [[输出卡片/主题/01-xxx|主题（迭代N次）]] ← [[知识卡片/01]]
+
+## 待转化知识卡片
+1. [[知识卡片/02. xxx|02. xxx]]
+
+## 最终成稿
+**文件路径**: [路径]
+**生成时间**: [YYYY-MM-DD HH:mm]
+**状态**: 已完成 / 进行中
+```
+
+### 字段维护责任
+
+| 字段 | 维护 Agent | 更新时机 |
+|------|-----------|---------|
+| 基础信息 | learning-agent | 项目启动 |
+| 学习状态 | learning-agent | 每轮对话/生成卡片后 |
+| 输出状态 | writing-agent | 迭代/润色后 |
+| 知识卡片列表 | learning-agent | 生成卡片后 |
+| 输出卡片列表 | structure-agent | 生成输出卡片后 |
+| 待转化列表 | structure-agent | 生成输出卡片后 |
+| 最终成稿 | draft-agent | 成稿完成后 |
+
+---
+
+## ⚠️ 错误处理
+
+### 标准响应
+
+| 场景 | 响应 |
+|------|------|
+| Bash 失败 | 诚实告知 + 分析可能原因 |
+| Write 失败 | 检查权限/路径 + 建议解决方案 |
+| Edit 失败 | 回读当前内容 + 重试 |
+| Subagent 超时 | 显示部分结果 + 询问是否重试 |
+| 指令解析失败 | 显示原始内容 + 手动处理 |
+
+### 断点续传
+
+用户说"继续"时：
+1. 读取 `项目信息.md`
+2. 检查"当前正在优化"字段
+3. 有内容 → 路由到 writing-agent
+4. 为空 → 按"当前阶段"路由
+
+---
+
+## 👋 欢迎语（首次/无项目时）
+
+```
+欢迎来到 Vibe Writing！
+
+这里实现真正的**人AI共创**——以你为主体，AI为你的思维伙伴：
+- **学习**: 对话探索，激发灵感，总结成知识卡片
+- **结构**: 分析价值点，决定讲述逻辑
+- **写作**: 迭代优化，你把控内容
+- **成稿**: 串联所有内容，形成完整文章
+
+📌 可用命令：
+- /structure   分析下一步写什么
+- /iterate     进入迭代对话
+- /polish      直接润色
+- /draft       生成最终成稿
+- /generate-card  提前生成卡片
+
+开始吧，你想创作什么？
 ```
 
 ---
 
 ## ❓ 常见问题（FAQ）
 
-### Q1：插件会自动修改我的文件吗？
+### Q1：v1.0 和 v0.9 有什么区别？
+
+**A**：主要变化：
+- Subagent 不再直接执行工具调用，而是返回指令描述
+- 主 Agent 负责解析指令并执行实际的文件操作
+- 增加了强制验证机制，确保文件操作正确
+
+### Q2：插件会自动修改我的文件吗？
 
 **A**：不会。插件只在以下情况会创建/修改文件：
-- 你明确说"开始新项目"时创建项目结构
+- 你明确说"开始新项目"时
 - 你说"生成卡片"、"迭代"、"润色"等明确指令时
-- AI 会先说明即将执行的操作，获得你的确认
-
-### Q2：支持哪些语言？
-
-**A**：主要用于中文写作，但核心逻辑可以适配任何语言。
+- AI 会先说明即将执行的操作
 
 ### Q3：项目文件保存在哪里？
 
-**A**：默认保存在 `项目/[项目名]/` 目录。你可以在 `.local.md` 中自定义。
+**A**：默认保存在 `项目/[项目名]/` 目录。
 
 ### Q4：可以同时进行多个写作项目吗？
 
 **A**：可以。每个项目都是独立的，互不干扰。
-
-### Q5：如何删除一个项目？
-
-**A**：直接删除 `项目/[项目名]/` 目录即可。
-
-### Q6：插件会联网吗？
-
-**A**：仅在生成初始文档时会使用 WebSearch 查询最新信息，其他时间不联网。
-
----
-
-## 🤝 贡献
-
-欢迎贡献！请遵循以下流程：
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
-
-**贡献指南**：
-- 遵循现有代码风格
-- 添加必要的文档
-- 测试你的更改
-- 确保所有 Agents 的工具调用明确（使用 Bash、Read、Write、Edit）
-
----
-
-## 📮 反馈与支持
-
-- **问题报告**：[GitHub Issues](https://github.com/gitboy808/vibe-writing/issues)
-- **功能建议**：[GitHub Discussions](https://github.com/gitboy808/vibe-writing/discussions)
-- **使用问题**：查看 [FAQ](#-常见问题faq) 或提交 Issue
 
 ---
 
@@ -322,22 +330,19 @@ Transformer使用自注意力机制 [...][[Attention Is All You Need](https://ar
 
 - [x] v0.7.0 - 自然语言触发机制
 - [x] v0.8.0 - 技能描述优化
-- [x] v0.9.0 - 极简路由架构（主agent零任务执行，subagent完全自治）
-- [x] v0.9.1 - 完善 agent 权限（WebSearch 全支持），来源链接标注规范
-- [ ] v1.0.0 - 协作编辑功能
+- [x] v0.9.0 - 极简路由架构
+- [x] v0.9.1 - 完善 agent 权限，来源链接标注规范
+- [x] v1.0.0 - 调研+执行分离架构，标准指令格式，强制验证
+- [ ] v1.1.0 - 错误恢复机制
 
 ---
 
 ## 📄 许可证
 
-MIT License - 详见 [LICENSE](https://github.com/gitboy808/vibe-writing/blob/main/LICENSE)
+MIT License
 
 ---
 
 ## 🙏 致谢
 
 感谢所有为 Vibe Writing System 提供反馈和建议的用户！
-
-特别感谢：
-- Anthropic 团队的 Claude Code 平台
-- 所有测试用户的宝贵意见

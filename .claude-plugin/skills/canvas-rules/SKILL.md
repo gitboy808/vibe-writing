@@ -1,7 +1,6 @@
 ---
 name: canvas-rules
 description: Standards for Obsidian Canvas operations. Covers node creation, layout, connections, and file path rules.
-version: 0.7.0
 ---
 
 # Canvas Rules - Vibe Writing System

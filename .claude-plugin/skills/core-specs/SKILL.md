@@ -1,7 +1,6 @@
 ---
 name: core-specs
 description: Reference for project metadata standards, file operations, and path conventions. Use when updating project info or validating structure.
-version: 0.7.0
 ---
 
 # Core Specifications - Vibe Writing System
