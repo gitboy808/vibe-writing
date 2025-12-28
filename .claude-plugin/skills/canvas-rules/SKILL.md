@@ -1,7 +1,7 @@
 ---
 name: canvas-rules
-description: This skill should be used when Vibe Writing agents need to create, modify, or organize Canvas whiteboards. Triggers when adding cards to Canvas after iteration, organizing board structure, or creating connections between cards.
-version: 0.6.1
+description: Standards for Obsidian Canvas operations. Covers node creation, layout, connections, and file path rules.
+version: 0.7.0
 ---
 
 # Canvas Rules - Vibe Writing System
@@ -191,11 +191,55 @@ python -m json.tool "项目/[项目名]/内容白板.canvas" > /dev/null && echo
 - Trailing commas in JSON arrays
 - Invalid UTF-8 characters
 
-## Additional Resources
+## 🔗 Dual-Link System (内联规范)
 
-For detailed Canvas operations:
-- **`references/dual-link.md`** - Complete Canvas workflow and dual-link integration
-- **`references/example-project.md`** - Working Canvas structure example
+### 本质
+
+标记用户在哪里"停下来"产生疑问的历史记录。
+
+### 操作流程
+
+用户看文档 → 产生疑问 → 对话形成新卡片 → 把新卡片标题作为双链插入源文档
+
+### 双链格式
+
+`[[{WORK_DIR}/项目/[项目名]/知识卡片/[序号]. [标题]|[序号]. [标题]]]`
+
+### {WORK_DIR} 自动获取
+
+1. AI 生成双链前必须执行 `pwd`
+2. 提取最后一级目录名（如 `vibe-writing-Tasihi`）
+3. 动态构建完整双链路径
+
+**示例**:
+- 完整路径: `/Users/changcheng/Desktop/vibe-writing-Tasihi`
+- 提取: `vibe-writing-Tasihi`
+- 双链: `[[vibe-writing-Tasihi/项目/AI为什么能秒懂/知识卡片/01. xxx|01. xxx]]`
+
+### 双链插入流程（6步）
+
+**步骤1：判断来源**
+AI 根据对话内容自主判断（不询问用户），优先级：
+- 问题直接提及某文档/卡片 → 那个文档
+- 问题延续上一轮话题 → 上一轮对应源
+- 问题涉及初始文档概念 → 初始文档
+- 无法判断 → 初始文档末尾
+
+**步骤2：Read 源文档**
+
+**步骤3：匹配插入位置**
+理解对话逻辑，判断用户在哪里"停下来"产生疑问：
+- 首次提问 → 插在对应内容位置
+- 整体感受（"看完后"、"整体来说"）→ 插在末尾
+- 综合疑问（涉及多处）→ 插在最核心位置
+
+**步骤4：插入双链**
+格式：在匹配位置后换行，单独一行，前后不空行，使用别名语法 `[[完整路径|序号. 标题]]`
+
+**步骤5：Edit 保存**
+
+**步骤6：处理多张卡片**
+逐张处理：生成卡片1 → 判断来源 → Read → 匹配 → 插入 → 保存 → 生成卡片2 → 读取最新源文档 → 匹配 → 插入 → 保存
 
 ## Quick Reference
 
