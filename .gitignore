@@ -50,6 +50,7 @@ desktop.ini               # Windows 桌面配置
 # ============================================
 
 .claude/
+.mcp.json
 .obsidian/
 项目/
 PLAN.md
