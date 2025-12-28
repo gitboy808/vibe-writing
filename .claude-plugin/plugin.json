@@ -1,7 +1,7 @@
 {
   "name": "vibe-writing",
-  "version": "0.8.1",
-  "description": "Vibe Writing System - 以人为主体的思维协同写作系统。v0.8.1: 优化技能描述长度，解决字符限制问题",
+  "version": "0.9.1",
+  "description": "Vibe Writing System - 以人为主体的思维协同写作系统。v0.9.1: 完善 agent 权限（WebSearch全支持），添加来源链接标注规范",
   "author": {
     "name": "gitboy808",
     "url": "https://github.com/gitboy808"
