@@ -41,7 +41,7 @@ Always execute `pwd` at the start of any agent session to extract the working di
 
 ## Project Information Structure
 
-The `项目信息.md` file contains 9 major fields. Each field is maintained by specific agents following strict responsibility separation.
+The `项目信息.md` file contains 10 major fields. Each field is maintained by specific agents following strict responsibility separation.
 
 ### Field Overview
 
@@ -55,11 +55,20 @@ The `项目信息.md` file contains 9 major fields. Each field is maintained by 
 | Pending Conversion List | structure-agent | After conversion |
 | Structure Analysis | structure-agent | After "analyze next" |
 | Canvas Organization | writing-agent | After board organization |
+| Dialog Summary | **所有 Subagent** | **修改项目目录后** ⬅️ 架构更新 |
 | Final Draft | draft-agent | After draft generation |
 
 ### Core Principle
 
-Each field is maintained by only one agent. No conflicts, no overlap.
+**架构原则更新**：
+- **对话摘要**：任何修改项目目录的 Subagent 都必须更新对话摘要
+- **其他字段**：每个字段只由一个 Agent 维护，无冲突、无重叠
+
+**对话摘要维护者**：
+- learning-agent：学习阶段生成知识卡片后
+- structure-agent：结构阶段生成输出卡片后
+- writing-agent：写作阶段优化/润色/组织白板后
+- draft-agent：成稿阶段生成最终成稿后
 
 ## Project Structure
 
@@ -102,6 +111,28 @@ Each field is maintained by only one agent. No conflicts, no overlap.
 
 ### 第X-Y轮生成
 1. [[知识卡片/[标题]|[标题]]]
+```
+
+**字段J - 对话摘要**:
+```markdown
+## 💬 对话摘要
+
+### 学习阶段（第X-Y轮，[日期]）
+**用户询问了**：[问题列表]
+**讨论了**：[核心概念]
+**生成的知识卡片**：[卡片列表]
+
+### 结构阶段（[日期]）
+**分析结果**：[价值点总结]
+**生成输出卡片**：[卡片列表]
+
+### 写作阶段（[日期]）
+**优化了**：[卡片列表]
+**迭代次数**：[N]次
+
+### 成稿阶段（[日期]）
+**最终成稿**：[文件路径]
+**状态**：已完成/待润色
 ```
 
 ### Structure Agent Maintains
