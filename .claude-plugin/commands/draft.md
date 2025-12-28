@@ -2,12 +2,23 @@
 name: draft
 description: 生成最终成稿（Vibe Writing 成稿Agent）
 argument-hint: 无需参数
-allowed-tools: ["Read", "Write", "Edit", "Glob"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Task"]
 ---
 
 # /draft - 生成最终成稿
 
 这是 Vibe Writing System 的成稿阶段快捷命令。
+
+## 执行指令
+
+立即调用以下 Task 工具：
+
+```typescript
+Task(
+  subagent_type=".claude-plugin:draft-agent",
+  prompt="用户希望生成最终成稿，串联所有输出卡片形成完整文章"
+)
+```
 
 ## 使用场景
 

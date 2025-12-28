@@ -2,12 +2,23 @@
 name: iterate
 description: 进入迭代对话模式（Vibe Writing 写作Agent）
 argument-hint: 无需参数
-allowed-tools: ["Read", "Write", "Edit", "Glob", "WebSearch"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "WebSearch", "Task"]
 ---
 
 # /iterate - 迭代对话模式
 
 这是 Vibe Writing System 的写作阶段快捷命令 - 迭代模式。
+
+## 执行指令
+
+立即调用以下 Task 工具：
+
+```typescript
+Task(
+  subagent_type=".claude-plugin:writing-agent",
+  prompt="用户希望进入迭代对话模式，对现有输出卡片进行深度对话迭代"
+)
+```
 
 ## 使用场景
 

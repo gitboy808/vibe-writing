@@ -2,12 +2,23 @@
 name: generate-card
 description: 提前生成知识卡片（Vibe Writing 学习Agent）
 argument-hint: 无需参数
-allowed-tools: ["Read", "Write", "Edit", "Glob", "WebSearch"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "WebSearch", "Task"]
 ---
 
 # /generate-card - 提前生成知识卡片
 
 这是 Vibe Writing System 的学习阶段快捷命令。
+
+## 执行指令
+
+立即调用以下 Task 工具：
+
+```typescript
+Task(
+  subagent_type=".claude-plugin:learning-agent",
+  prompt="用户希望提前生成知识卡片，不等4轮对话立即提炼当前对话内容"
+)
+```
 
 ## 使用场景
 

@@ -2,12 +2,23 @@
 name: structure
 description: 深度分析下一步写什么（Vibe Writing 结构Agent）
 argument-hint: 无需参数
-allowed-tools: ["Read", "Write", "Edit", "Glob", "WebSearch"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "WebSearch", "Task"]
 ---
 
 # /structure - 深度分析下一步写什么
 
 这是 Vibe Writing System 的结构阶段快捷命令。
+
+## 执行指令
+
+立即调用以下 Task 工具：
+
+```typescript
+Task(
+  subagent_type=".claude-plugin:structure-agent",
+  prompt="用户希望深度分析下一步写什么，分析知识卡片、识别价值点、生成输出卡片"
+)
+```
 
 ## 使用场景
 

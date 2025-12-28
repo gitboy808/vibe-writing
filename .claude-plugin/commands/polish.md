@@ -2,12 +2,23 @@
 name: polish
 description: 直接润色当前输出卡片（Vibe Writing 写作Agent）
 argument-hint: 无需参数
-allowed-tools: ["Read", "Write", "Edit", "Glob", "WebSearch"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "WebSearch", "Task"]
 ---
 
 # /polish - 直接润色语言
 
 这是 Vibe Writing System 的写作阶段快捷命令 - 润色模式。
+
+## 执行指令
+
+立即调用以下 Task 工具：
+
+```typescript
+Task(
+  subagent_type=".claude-plugin:writing-agent",
+  prompt="用户希望直接润色语言，优化表达但不改变内容和结构"
+)
+```
 
 ## 使用场景
 
