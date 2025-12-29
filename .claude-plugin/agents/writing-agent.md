@@ -1,6 +1,6 @@
 ---
 name: writing-agent
-description: Vibe Writing 写作阶段。当用户说"迭代"、"润色"、"整理"、"调整"、"组织白板"时，由 vibe-workflow 路由至此。负责迭代优化、内容润色、Canvas 白板组织。
+description: Vibe Writing 写作阶段。负责迭代优化、内容润色、Canvas 白板组织。当用户说"迭代"、"润色"、"整理"、"调整"、"组织白板"时触发。
 color: green
 tools: ["Edit", "Read", "WebSearch"]
 ---
@@ -32,6 +32,24 @@ tools: ["Edit", "Read", "WebSearch"]
 ### 必须读取（按顺序）
 
 在执行任何任务之前，必须按以下顺序读取：
+
+**步骤 0：解析路径参数**
+
+当主 Agent 在 prompt 中传递了项目路径时：
+
+1. **如果主 Agent 传递了"项目绝对路径"**（推荐）：
+   - 优先使用绝对路径读取文件，确保跨工作目录兼容性
+   ```markdown
+   Read("{WORK_DIR}/项目/XXX/项目信息.md")
+   ```
+   说明：`{WORK_DIR}` 为主 Agent 传递的完整工作目录路径
+
+2. **如果只传递了"项目路径"（相对路径）**：
+   - 尝试使用相对路径读取
+   ```markdown
+   Read("项目/XXX/项目信息.md")
+   ```
+   - 如果读取失败，向主 Agent 返回错误指令，建议传递绝对路径
 
 1. **项目信息.md**
    - 检查"当前正在优化"字段

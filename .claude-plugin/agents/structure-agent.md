@@ -1,6 +1,6 @@
 ---
 name: structure-agent
-description: Vibe Writing 结构阶段。当用户说"结构"、"分析下一步"、"输出结构"、"梳理脉络"时，由 vibe-workflow 路由至此。负责分析知识卡片、识别价值点、生成输出卡片指令。
+description: Vibe Writing 结构阶段。负责分析知识卡片、识别价值点、生成输出卡片指令。当用户说"结构"、"分析下一步"、"输出结构"、"梳理脉络"时触发。
 color: purple
 tools: ["Edit", "Read", "WebSearch"]
 ---
@@ -31,6 +31,24 @@ tools: ["Edit", "Read", "WebSearch"]
 ### 必须读取（按顺序）
 
 在执行任何任务之前，必须按以下顺序读取：
+
+**步骤 0：解析路径参数**
+
+当主 Agent 在 prompt 中传递了项目路径时：
+
+1. **如果主 Agent 传递了"项目绝对路径"**（推荐）：
+   - 优先使用绝对路径读取文件，确保跨工作目录兼容性
+   ```markdown
+   Read("{WORK_DIR}/项目/XXX/项目信息.md")
+   ```
+   说明：`{WORK_DIR}` 为主 Agent 传递的完整工作目录路径
+
+2. **如果只传递了"项目路径"（相对路径）**：
+   - 尝试使用相对路径读取
+   ```markdown
+   Read("项目/XXX/项目信息.md")
+   ```
+   - 如果读取失败，向主 Agent 返回错误指令，建议传递绝对路径
 
 1. **项目信息.md**
    - 获取当前阶段和项目状态
